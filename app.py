@@ -138,9 +138,8 @@ st.caption(f"Menampilkan data untuk tahun {selected_start_year} - {selected_end_
 # ---------------------------------
 # KPI CARDS (UPGRADE POIN 6 & OPSIONAL 5)
 st.markdown("---")
-st.subheader("Ringkasan Eksekutif (Sesuai Filter)")
+st.subheader("Ringkasan Eksekutif")
 
-# Fungsi untuk memformat angka besar
 def format_large_number(num):
     if num >= 1_000_000_000:
         return f"${num / 1_000_000_000:.2f} Miliar"
@@ -154,7 +153,6 @@ total_budget = df_filtered['budget'].sum()
 avg_score = df_filtered['score'].mean()
 avg_roi = df_filtered['roi'].mean() 
 
-# 2. Buat kolom
 col1, col2, col3, col4 = st.columns(4)
 
 # 3. Tampilkan st.metric di setiap kolom
@@ -169,11 +167,7 @@ with col4:
 
 st.markdown("---")
 
-# ---------------------------------
-# VISUALISASI / DASHBOARD (POIN 5)
-# ---------------------------------
-
-# --- POIN 5 (Visualisasi 1: Line Chart) ---
+# line chart
 st.header('Pertanyaan 1: Bagaimana tren budget dan gross film dari tahun ke tahun?')
 
 df_trend = df_filtered.groupby('year')[['budget', 'gross']].mean().reset_index()
@@ -191,11 +185,10 @@ st.altair_chart(chart1, use_container_width=True)
 
 st.markdown("---")
 
-# --- Tata Letak Kolom Baru (UPGRADE POIN 6) ---
 col_a, col_b = st.columns(2)
 
 with col_a:
-    # --- POIN 5 (Visualisasi 2: Bar Chart) ---
+    # bar chart 
     st.header('Pertanyaan 2: 5 Genre mana dengan rata-rata score tertinggi?')
 
     df_genre_score = df_filtered.groupby('genre')['score'].mean().nlargest(5).reset_index()
@@ -212,7 +205,7 @@ with col_a:
     st.altair_chart(chart2, use_container_width=True)
 
 with col_b:
-    # --- POIN 5 (Visualisasi 3: Scatter Plot) ---
+    # scatter plot
     st.header('Pertanyaan 3: Apakah budget besar menjamin score tinggi?')
 
     chart3_colors = alt.Scale(scheme='inferno') 
@@ -226,22 +219,19 @@ with col_b:
     st.altair_chart(chart3, use_container_width=True)
 
 
-# --- PERUBAHAN: Upgrade "Top 10" dari Tabel menjadi Chart Visual ---
 st.markdown("---")
 st.header("🏆 Top 10 Film Terlaris (Sesuai Filter)")
 
-# Ambil data Top 10 (angka mentah, jangan diformat)
 top_10_gross_data = df_filtered.sort_values(by='gross', ascending=False).head(10)
 
-# Buat Horizontal Bar Chart (seperti di screenshot Anda)
 chart4 = alt.Chart(top_10_gross_data).mark_bar(color='gold').encode(
     x=alt.X('gross:Q', title='Pendapatan (Gross) - USD'),
-    y=alt.Y('name:N', title='Nama Film', sort='-x'), # Sortir descending
+    y=alt.Y('name:N', title='Nama Film', sort='-x'), 
     tooltip=[
         'name', 
         'year', 
         'genre', 
-        alt.Tooltip('gross:Q', format='$,.0f'), # Format tooltip
+        alt.Tooltip('gross:Q', format='$,.0f'), 
         alt.Tooltip('budget:Q', format='$,.0f'),
         alt.Tooltip('roi:Q', format='.1f')
     ]
