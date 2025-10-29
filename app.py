@@ -168,8 +168,8 @@ with col4:
 st.markdown("---")
 
 # line chart
-st.header('Pertanyaan 1: Bagaimana tren budget dan gross film dari tahun ke tahun?')
-
+st.header('Q1: Bagaimana tren budget dan gross film dari tahun ke tahun?')
+st.caption("Visualisasi ini menunjukkan evolusi rata-rata anggaran dan pendapatan film selama periode waktu yang dipilih.")
 df_trend = df_filtered.groupby('year')[['budget', 'gross']].mean().reset_index()
 df_trend_melted = df_trend.melt('year', var_name='Tipe Metrik', value_name='Rata-rata Dolar (USD)')
 
@@ -189,8 +189,8 @@ col_a, col_b = st.columns(2)
 
 with col_a:
     # bar chart 
-    st.header('Pertanyaan 2: 5 Genre mana dengan rata-rata score tertinggi?')
-
+    st.header('Q2: 5 Genre mana dengan rata-rata score tertinggi?')
+    st.caption("Visualisasi ini mengurutkan 5 genre teratas berdasarkan rata-rata skor IMDb, menunjukkan genre mana yang paling disukai penonton.")
     df_genre_score = df_filtered.groupby('genre')['score'].mean().nlargest(5).reset_index()
 
     chart2 = alt.Chart(df_genre_score).mark_bar(
@@ -206,7 +206,8 @@ with col_a:
 
 with col_b:
     # scatter plot
-    st.header('Pertanyaan 3: Apakah budget besar menjamin score tinggi?')
+    st.header('Q3: Apakah budget besar menjamin score tinggi?')
+    st.caption("Visualisasi ini memetakan hubungan antara anggaran (skala log) dan skor IMDb, membantu melihat korelasi dan anomali.")
 
     chart3_colors = alt.Scale(scheme='inferno') 
 
@@ -240,3 +241,8 @@ chart4 = alt.Chart(top_10_gross_data).mark_bar(color='gold').encode(
 )
 
 st.altair_chart(chart4, use_container_width=True)
+
+st.markdown("---")
+with st.expander("📊 Tampilkan Data Mentah (Sesuai Filter)", expanded=False):
+    st.subheader("Data Film yang Difilter")
+    st.dataframe(df_filtered, use_container_width=True)
